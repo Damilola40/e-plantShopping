@@ -9,27 +9,46 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
+    let total = 0;
+      cart.forEach((item) => {
+          const {quantity, cost} = item;
+          const costNumber = cost.parseFloat(item.cost.substring(1));
+          total += costNumber * quantity;
+          return total;
+      })
   };
 
   const handleContinueShopping = (e) => {
-   
+    onContinueShopping();
   };
 
-
+  const handleCheckoutShopping = (e) => {
+    e.alert('Functionality to be added for future reference');
+  };
 
   const handleIncrement = (item) => {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+        dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+        dispatch(removeItem({name: item.name, quantity:item.quantity}));
+    }
   };
 
   const handleRemove = (item) => {
+      dispatch(removeItem({name: item.name, quantity:item.quantity}))
   };
+
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    const {quantity, cost} = item;
+    const costNumber = cost.parseFloat(item.cost.substring(1))
+    const totalCost = costNumber * quantity;
+    return Number(totalCost.toFixed(2)); // toFixed() returns a string, not a number. Used Number() to convert it
   };
 
   return (
@@ -45,7 +64,7 @@ const CartItem = ({ onContinueShopping }) => {
               <div className="cart-item-quantity">
                 <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
                 <span className="cart-item-quantity-value">{item.quantity}</span>
-                <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
+                <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)} >+</button>
               </div>
               <div className="cart-item-total">Total: ${calculateTotalCost(item)}</div>
               <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
